@@ -8,13 +8,15 @@ class Trustly::Api::Signed < Trustly::Api
       :host        => 'test.trustly.com',
       :port        => 443,
       :is_https    => true,
-      :private_pem => "#{Rails.root}/certs/trustly/test.merchant.private.pem",
-      :public_pem  => "#{Rails.root}/certs/trustly/test.trustly.public.pem"
+      # :private_pem => "#{Rails.root}/certs/trustly/test.merchant.private.pem",
+      # :public_pem  => "#{Rails.root}/certs/trustly/test.trustly.public.pem"
+      :private_pem => ENV['TRUSTLY_PRIVATE_KEY'],
+      :public_pem  => ENV['TRUSTLY_PUBLIC_KEY']
     }.merge(_options)
 
 
-    raise Trustly::Exception::SignatureError, "File '#{options[:private_pem]}' does not exist" unless File.file?(options[:private_pem])
-    raise Trustly::Exception::SignatureError, "File '#{options[:public_pem]}' does not exist"  unless File.file?(options[:public_pem])
+    # raise Trustly::Exception::SignatureError, "File '#{options[:private_pem]}' does not exist" unless File.file?(options[:private_pem])
+    # raise Trustly::Exception::SignatureError, "File '#{options[:public_pem]}' does not exist"  unless File.file?(options[:public_pem])
 
     super(options[:host],options[:port],options[:is_https],options[:public_pem])
 
