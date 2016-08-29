@@ -107,7 +107,7 @@ class Trustly::Api::Signed < Trustly::Api
     # check required fields
     request = Trustly::Data::JSONRPCRequest.new('Deposit',data,attributes)
     return self.call_rpc(request)
-    #options["HoldNotifications"] = "1" unless 
+    #options["HoldNotifications"] = "1" unless
   end
 
   def refund(_options)
@@ -119,6 +119,32 @@ class Trustly::Api::Signed < Trustly::Api
     ["OrderID","Amount","Currency"].each{|req_attr| raise Trustly::Exception::DataError, "Option not valid '#{req_attr}'" if options.try(:[],req_attr).nil? }
 
     request = Trustly::Data::JSONRPCRequest.new('Refund',options,nil)
+    return self.call_rpc(request)
+  end
+
+  def select_account(_options)
+    options = {
+        "Locale"            => "se_SE",
+        "Country"           => "SE",
+        "SuccessURL"        => "https://www.trustly.com/success",
+        "FailURL"           => "https://www.trustly.com/fail",
+        "NotificationURL"   => "https://test.trustly.com/demo/notifyd_test",
+    }.merge(_options)
+
+    ["Locale","Country","SuccessURL","FailURL","NotificationURL","EndUserID","MessageID"].each do |req_attr|
+      raise Trustly::Exception::DataError, "Option not valid '#{req_attr}'" if options.try(:[],req_attr).nil?
+    end
+
+    attributes = options.slice(
+        "Locale","Country","IP",
+        "SuccessURL","FailURL","TemplateURL","URLTarget",
+        "MobilePhone","Firstname","Lastname","NationalIdentificationNumber"
+    )
+
+    data       = options.slice("NotificationURL","EndUserID","MessageID")
+
+    # check required fields
+    request = Trustly::Data::JSONRPCRequest.new('SelectAccount',data,attributes)
     return self.call_rpc(request)
   end
 
