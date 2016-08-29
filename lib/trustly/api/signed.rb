@@ -28,12 +28,16 @@ class Trustly::Api::Signed < Trustly::Api
     raise Trustly::Exception::AuthentificationError, "Username not valid" if self.api_username.nil?
     raise Trustly::Exception::AuthentificationError, "Password not valid" if self.api_password.nil?
 
-    self.load_merchant_privatekey(options[:private_pem])
+    self.load_merchant_privatekey
 
   end
 
-  def load_merchant_privatekey(filename)
-    self.merchant_privatekey = OpenSSL::PKey::RSA.new(File.read(filename))
+  # def load_merchant_privatekey(filename)
+  #   self.merchant_privatekey = OpenSSL::PKey::RSA.new(File.read(filename))
+  # end
+
+  def load_merchant_privatekey
+    self.merchant_privatekey = OpenSSL::PKey::RSA.new(ENV['TRUSTLY_PRIVATE_KEY'])
   end
 
   def handle_response(request,httpcall)

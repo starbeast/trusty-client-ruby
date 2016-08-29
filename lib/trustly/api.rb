@@ -1,12 +1,12 @@
 
-class Trustly::Api 
+class Trustly::Api
 
   attr_accessor :api_host, :api_port, :api_is_https,:last_request,:trustly_publickey,:trustly_verifyer
 
   def serialize_data(object)
     serialized  = ""
     if object.is_a?(Array)
-      # Its an array 
+      # Its an array
       object.each do |obj|
         serialized.concat(obj.is_a?(Hash) ? serialize_data(obj) : obj.to_s)
       end
@@ -27,11 +27,11 @@ class Trustly::Api
     self.api_port     = port
     self.api_is_https = is_https
 
-    self.load_trustly_publickey(pem_file)
+    self.load_trustly_publickey
   end
 
-  def load_trustly_publickey(file)
-    self.trustly_publickey = OpenSSL::PKey::RSA.new(File.read(file)) #.public_key
+  def load_trustly_publickey
+    self.trustly_publickey = OpenSSL::PKey::RSA.new(ENV['TRUSTLY_PUBLIC_KEY'])
   end
 
   def url_path(request=nil)
@@ -105,5 +105,5 @@ class Trustly::Api
 
 
 end
-  
+
 
