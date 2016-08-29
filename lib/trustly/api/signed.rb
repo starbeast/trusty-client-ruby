@@ -154,6 +154,18 @@ class Trustly::Api::Signed < Trustly::Api
     return self.call_rpc(request)
   end
 
+  def account_payout(_options)
+    options = {
+        "Currency" => "SEK"
+    }.merge(_options)
+
+    # check for required options
+    ["NotificationURL","AccountID","EndUserID","MessageID","Amount","Currency"].each{|req_attr| raise Trustly::Exception::DataError, "Option not valid '#{req_attr}'" if options.try(:[],req_attr).nil? }
+
+    request = Trustly::Data::JSONRPCRequest.new('AccountPayout',options,nil)
+    return self.call_rpc(request)
+  end
+
   def notification_response(notification,success=true)
     response = Trustly::JSONRPCNotificationResponse.new(notification,success)
     response.set_signature(self.sign_merchant_request(response))
